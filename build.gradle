@@ -17,13 +17,12 @@ java {
 	}
 }
 
-repositories {
-	mavenCentral()
-}
-
 dependencies {
-	// Minecraft 26.1 sudah unobfuscated, tidak perlu mappings tambahan
+	// Minecraft 26.1 sudah unobfuscated — pakai Mojang official mappings
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
+	mappings loom.officialMojangMappings()
+
+	// Fabric Loader & API
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 }
