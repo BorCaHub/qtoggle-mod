@@ -7,7 +7,8 @@ version = project.mod_version
 group = project.maven_group
 
 base {
-	archivesName = project.archives_base_name
+	// Jar output name: "Q Toggle 26.1 1.0.0"
+	archivesName = "Q Toggle 26.1 ${project.mod_version}"
 }
 
 java {
@@ -39,7 +40,7 @@ tasks.withType(JavaCompile).configureEach {
 
 jar {
 	from("LICENSE") {
-		rename { "${it}_${project.base.archivesName.get()}" }
+		rename { "${it}_qtoggle" }
 	}
 }
 
