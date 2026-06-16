@@ -25,17 +25,14 @@ jobs:
       - name: Resolve dependencies dulu
         run: ./gradlew dependencies --configuration compileClasspath
 
-      - name: Dump KeyMapping
+      - name: Dump KeyMapping dan Category
         run: |
           JAR=$(find ~/.gradle/caches -name "minecraft-merged-deobf*.jar" | head -1)
           echo "JAR: $JAR"
-          javap -p "$JAR!/net/minecraft/client/KeyMapping.class"
-
-      - name: Dump Category
-        run: |
-          JAR=$(find ~/.gradle/caches -name "minecraft-merged-deobf*.jar" | head -1)
-          echo "JAR: $JAR"
-          javap -p "$JAR!/net/minecraft/client/KeyMapping\$Category.class"
+          echo "=== KeyMapping ==="
+          javap -p -classpath "$JAR" net.minecraft.client.KeyMapping
+          echo "=== Category ==="
+          javap -p -classpath "$JAR" 'net.minecraft.client.KeyMapping$Category'
 
       - name: Build mod
         run: ./gradlew build
