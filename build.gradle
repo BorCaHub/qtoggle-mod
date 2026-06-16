@@ -18,9 +18,10 @@ java {
 }
 
 dependencies {
-	// Minecraft 26.1 sudah unobfuscated — pakai Mojang official mappings
+	// Minecraft 26.1 sudah unobfuscated — TIDAK pakai Mojang mappings,
+	// gunakan loom.noMappings() karena nama class/method sudah terbaca langsung
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
-	mappings loom.officialMojangMappings()
+	mappings loom.noMappings()
 
 	// Fabric Loader & API
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
