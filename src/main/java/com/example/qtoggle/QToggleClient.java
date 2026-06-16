@@ -18,10 +18,9 @@ public class QToggleClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
 
-        // Register custom category — uses Identifier, shows up in Options > Controls
-        // MC 26.1: Identifier constructor takes (namespace, path) directly
+        // MC 26.1: Identifier.of(String) takes "namespace:path" as one string
         KeyMapping.Category toggleCategory = KeyMapping.Category.register(
-                new Identifier("qtoggle", "main")
+                Identifier.of("qtoggle:main")
         );
 
         toggleKey = new KeyMapping(
