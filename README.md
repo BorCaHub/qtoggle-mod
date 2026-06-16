@@ -49,18 +49,17 @@ komputermu.
 3. Jalankan game, masuk ke **Options > Controls > Q Toggle** untuk
    memastikan/mengganti keybind toggle (default G).
 
-## Perubahan terbaru (sudah diperbaiki)
-Setelah dicek ulang lewat dokumentasi resmi Fabric, ada perubahan API
-penting di Fabric API 26.1 yang sudah disesuaikan di source code ini:
-- `KeyBindingHelper` (package `keybinding.v1`) di versi lama berganti
-  nama jadi **`KeyMappingHelper`** (package `keymapping.v1`) di 26.1.
-- Sistem kategori keybind vanilla berubah total: tidak lagi pakai
-  `String` biasa, tapi object **`KeyMapping.Category`** yang dibuat lewat
-  `KeyMapping.Category.create(ResourceLocation)`.
-- Versi Fabric API yang dikonfirmasi mendukung 26.1–26.1.2 sudah diisi
-  otomatis di `gradle.properties`: `0.149.1+26.1.2`. Cek lagi di
-  Modrinth kalau saat kamu build sudah ada versi lebih baru untuk
-  26.1.3 dst.
+## Update penting (loom_version diperbaiki)
+Versi Loom `1.15` di percobaan sebelumnya **tidak pernah ada sebagai
+release** — yang ada hanya alpha (`1.15.0-alpha.x`) lalu langsung lompat
+ke versi stabil `1.15.1` sampai `1.15.5`. Sudah diperbaiki ke
+**`1.15.5`** (versi stabil terbaru per Maret 2026) di `gradle.properties`.
+`minecraft_version` dan `loader_version` juga sudah disamakan dengan
+instalasi gamemu yang terbukti jalan (26.1.2 dan loader 0.19.2).
+
+Kalau pakai GitHub Actions, di workflow `.github/workflows/build.yml`,
+baris `gradle wrapper --gradle-version 9.4` aman dibiarkan — Gradle
+otomatis pakai versi compatible terbaru kalau 9.4 sudah tidak ada.
 
 ## Kalau ada error compile
 Minecraft 26.1 masih baru, jadi nama-nama method internal (Mojang
