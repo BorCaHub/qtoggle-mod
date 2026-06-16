@@ -22,27 +22,20 @@ jobs:
       - name: Beri izin eksekusi gradlew
         run: chmod +x ./gradlew
 
-      - name: Dump KeyMapping API
-        run: ./gradlew dumpKeyMapping
+      - name: Resolve dependencies dulu
+        run: ./gradlew dependencies --configuration compileClasspath
 
-      - name: Cek isi Minecraft jar
+      - name: Dump KeyMapping
         run: |
-          # Cari minecraft jar di gradle cache
-          find ~/.gradle/caches -name "minecraft-26*.jar" 2>/dev/null | head -5
-          find ~/.gradle/caches -name "*.jar" | grep -i minecraft | head -10
-          
-      - name: Dump class KeyMapping
+          JAR=$(find ~/.gradle/caches -name "minecraft-merged-deobf*.jar" | head -1)
+          echo "JAR: $JAR"
+          javap -p "$JAR!/net/minecraft/client/KeyMapping.class"
+
+      - name: Dump Category
         run: |
-          JAR=$(find ~/.gradle/caches -name "*.jar" | grep -i minecraft | head -1)
-          echo "JAR ditemukan: $JAR"
-          # List semua class di jar
-          jar tf "$JAR" | grep -i keymapping
-          # Dump method KeyMapping
-          javap -p "$JAR!/net/minecraft/client/KeyMapping.class" 2>/dev/null || \
-          javap -classpath "$JAR" -p net.minecraft.client.KeyMapping 2>/dev/null || \
-          echo "Coba cara lain..."
-          # Cari file .class langsung
-          find ~/.gradle/caches -name "KeyMapping.class" 2>/dev/null | head -5
+          JAR=$(find ~/.gradle/caches -name "minecraft-merged-deobf*.jar" | head -1)
+          echo "JAR: $JAR"
+          javap -p "$JAR!/net/minecraft/client/KeyMapping\$Category.class"
 
       - name: Build mod
         run: ./gradlew build
