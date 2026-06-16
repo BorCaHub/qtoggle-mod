@@ -8,7 +8,7 @@ group = project.maven_group
 
 base {
 	// Jar output name: "Q Toggle 26.1 1.0.0"
-	archivesName = "Q Toggle 26.1 ${project.mod_version}"
+	archivesName = "Q Toggle 26.1"
 }
 
 java {
