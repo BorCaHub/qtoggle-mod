@@ -25,6 +25,13 @@ jobs:
       - name: Resolve dependencies first
         run: ./gradlew dependencies --configuration compileClasspath
 
+      - name: Dump Identifier
+        run: |
+          JAR=$(find ~/.gradle/caches -name "minecraft-merged-deobf*.jar" | head -1)
+          echo "JAR: $JAR"
+          echo "=== Identifier ==="
+          javap -p -classpath "$JAR" net.minecraft.resources.Identifier
+
       - name: Dump KeyMapping and Category
         run: |
           JAR=$(find ~/.gradle/caches -name "minecraft-merged-deobf*.jar" | head -1)
