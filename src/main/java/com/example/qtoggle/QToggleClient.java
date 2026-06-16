@@ -2,7 +2,7 @@ package com.example.qtoggle;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
+import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.Options;
@@ -30,12 +30,14 @@ public class QToggleClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
 
-        // FIX 1 & 2: Gunakan KeyBindingHelper (bukan KeyMappingHelper) dengan
-        // kategori String biasa — API keymapping.v1 belum ada di Fabric 26.1 public
-        toggleKey = KeyBindingHelper.registerKeyBinding(new KeyMapping(
+        // MC 26.1 / Fabric API 26.1:
+        // - KeyBindingHelper renamed to KeyMappingHelper (keymapping.v1)
+        // - registerKeyBinding renamed to registerKeyMapping
+        // - Category is now a plain String (no ResourceLocation needed)
+        toggleKey = KeyMappingHelper.registerKeyMapping(new KeyMapping(
                 "key.qtoggle.toggle",              // ID (dipakai oleh file lang)
                 InputConstants.Type.KEYSYM,
-                InputConstants.GLFW_KEY_G,          // FIX 3: int literal, bukan .KEY_G.getValue()
+                InputConstants.GLFW_KEY_G,          // int constant langsung, bukan .KEY_G.getValue()
                 "key.categories.qtoggle.main"       // Kategori sebagai String
         ));
 
@@ -66,6 +68,7 @@ public class QToggleClient implements ClientModInitializer {
 
     /**
      * Tampilkan pesan status ON/OFF di action bar (baris di atas hotbar).
+     * true = tampil di action bar, bukan chat
      */
     private void tampilkanStatus(Minecraft client, boolean aktif) {
         if (client.player == null) return;
@@ -74,8 +77,6 @@ public class QToggleClient implements ClientModInitializer {
                 ? "§a[Q Toggle] Mode DROP: AKTIF — Q akan drop item"
                 : "§c[Q Toggle] Mode DROP: TERKUNCI — Q tidak drop";
 
-        // FIX 4: sendSystemMessage untuk action bar di MC 26.1
-        // true = tampil di action bar, bukan chat
         client.player.sendSystemMessage(Component.literal(teks), true);
     }
 }
