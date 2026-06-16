@@ -18,15 +18,13 @@ java {
 }
 
 dependencies {
-	// Minecraft 26.1 sudah unobfuscated — pakai layered mapping kosong
-	// (loom.officialMojangMappings() ditolak di env unobfuscated,
-	//  loom.noMappings() tidak ada di Loom 1.15.5)
+	// Minecraft 26.1 sudah unobfuscated — TIDAK perlu baris "mappings" sama sekali
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
-	mappings loom.layered {}
 
-	// Fabric Loader & API
-	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
-	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+	// Fabric Loader & API — pakai implementation biasa, bukan modImplementation,
+	// karena di versi unobfuscated tidak ada proses remap
+	implementation "net.fabricmc:fabric-loader:${project.loader_version}"
+	implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 }
 
 processResources {
