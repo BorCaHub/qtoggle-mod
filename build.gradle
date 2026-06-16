@@ -17,13 +17,12 @@ java {
 }
 
 dependencies {
-	// MC 26.1 sudah pre-deobfuscated — pakai loom.noMappings() bukan officialMojangMappings()
+	// MC 26.1 is unobfuscated — NO mappings line at all (per Fabric official docs)
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
-	mappings loom.noMappings()
 
-	// Fabric Loader & API tetap pakai modImplementation agar Loom bisa wire dependency
-	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
-	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+	// MC 26.1: replace modImplementation → implementation (no remapping needed)
+	implementation "net.fabricmc:fabric-loader:${project.loader_version}"
+	implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 }
 
 processResources {
