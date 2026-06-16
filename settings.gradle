@@ -1,9 +1,19 @@
 pluginManagement {
 	repositories {
+		// Fabric maven dulu — untuk Loom plugin itu sendiri
 		maven {
 			name = 'Fabric'
 			url = 'https://maven.fabricmc.net/'
 		}
+		// Maven Central langsung (bukan lewat Gradle Plugin Portal proxy)
+		// supaya gson, asm, kotlin-metadata, cadixdev bisa diresolve
+		mavenCentral()
+		// Cadixdev repo — untuk lorenz, at (dependency Loom/Mercury)
+		maven {
+			name = 'Cadixdev'
+			url = 'https://maven.cadixdev.org/'
+		}
+		// Tetap ada sebagai fallback
 		gradlePluginPortal()
 	}
 }
@@ -17,6 +27,10 @@ dependencyResolutionManagement {
 		maven {
 			name = 'Mojang'
 			url = 'https://libraries.minecraft.net/'
+		}
+		maven {
+			name = 'Cadixdev'
+			url = 'https://maven.cadixdev.org/'
 		}
 		mavenCentral()
 	}
