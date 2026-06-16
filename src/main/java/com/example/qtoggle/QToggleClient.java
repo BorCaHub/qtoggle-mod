@@ -18,9 +18,9 @@ public class QToggleClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
 
-        // MC 26.1: Identifier.of(String) takes "namespace:path" as one string
+        // MC 26.1: use fromNamespaceAndPath (constructor is private, .of() tidak ada)
         KeyMapping.Category toggleCategory = KeyMapping.Category.register(
-                Identifier.of("qtoggle:main")
+                Identifier.fromNamespaceAndPath("qtoggle", "main")
         );
 
         toggleKey = new KeyMapping(
