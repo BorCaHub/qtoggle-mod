@@ -42,3 +42,26 @@ jar {
 		rename { "${it}_${project.base.archivesName.get()}" }
 	}
 }
+
+tasks.register('dumpKeyMapping') {
+    dependsOn configurations.compileClasspath
+    doLast {
+        def urls = configurations.compileClasspath.collect { it.toURI().toURL() }.toArray(new URL[0])
+        def cl = new URLClassLoader(urls, null as ClassLoader)
+        try {
+            def cls = cl.loadClass('net.minecraft.client.KeyMapping')
+            println "=== CONSTRUCTORS ==="
+            cls.declaredConstructors.each { println it }
+            println "=== METHODS ==="
+            cls.declaredMethods.each { println it }
+            println "=== INNER CLASSES ==="
+            cls.declaredClasses.each { inner ->
+                println "INNER: $inner"
+                inner.declaredConstructors.each { println "  CTOR: $it" }
+                inner.declaredMethods.each { println "  METHOD: $it" }
+            }
+        } finally {
+            cl.close()
+        }
+    }
+}
