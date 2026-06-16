@@ -2,7 +2,6 @@ package com.example.qtoggle;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.Options;
@@ -18,13 +17,16 @@ public class QToggleClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
 
-        // Use KeyBindingHelper (Fabric API standard) with plain String category
-        toggleKey = KeyBindingHelper.registerKeyBinding(new KeyMapping(
+        // Buat KeyMapping dengan constructor (String name, int keyCode, String category)
+        // Constructor ini tersedia di semua versi MC modern tanpa perlu Fabric helper
+        toggleKey = new KeyMapping(
                 "key.qtoggle.toggle",
-                InputConstants.Type.KEYSYM,
                 GLFW.GLFW_KEY_G,
-                "key.categories.qtoggle.main"   // plain String, no ResourceLocation needed
-        ));
+                "key.categories.qtoggle.main"
+        );
+
+        // Daftarkan manual ke map vanilla
+        KeyMapping.ALL.put("key.qtoggle.toggle", toggleKey);
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
 
@@ -46,8 +48,8 @@ public class QToggleClient implements ClientModInitializer {
     private void tampilkanStatus(Minecraft client, boolean aktif) {
         if (client.player == null) return;
         String teks = aktif
-                ? "§a[Q Toggle] Mode DROP: AKTIF — Q akan drop item"
-                : "§c[Q Toggle] Mode DROP: TERKUNCI — Q tidak drop";
+                ? "§a[Q Toggle] DROP: AKTIF — Q drop item"
+                : "§c[Q Toggle] DROP: TERKUNCI — Q tidak drop";
         client.gui.setOverlayMessage(Component.literal(teks), false);
     }
 }
