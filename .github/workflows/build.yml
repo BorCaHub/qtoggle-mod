@@ -19,13 +19,13 @@ jobs:
       - name: Generate Gradle Wrapper
         run: gradle wrapper --gradle-version 9.5.1
 
-      - name: Beri izin eksekusi gradlew
+      - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew
 
-      - name: Resolve dependencies dulu
+      - name: Resolve dependencies first
         run: ./gradlew dependencies --configuration compileClasspath
 
-      - name: Dump KeyMapping dan Category
+      - name: Dump KeyMapping and Category
         run: |
           JAR=$(find ~/.gradle/caches -name "minecraft-merged-deobf*.jar" | head -1)
           echo "JAR: $JAR"
