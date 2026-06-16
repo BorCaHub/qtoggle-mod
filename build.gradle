@@ -11,20 +11,19 @@ base {
 }
 
 java {
-	// Minecraft 26.1 membutuhkan Java 25
 	toolchain {
 		languageVersion = JavaLanguageVersion.of(25)
 	}
 }
 
 dependencies {
-	// Minecraft 26.1 sudah unobfuscated — TIDAK perlu baris "mappings" sama sekali
+	// Mappings wajib ada — tanpa ini Loom tidak bisa resolve class Minecraft
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
+	mappings loom.officialMojangMappings()
 
-	// Fabric Loader & API — pakai implementation biasa, bukan modImplementation,
-	// karena di versi unobfuscated tidak ada proses remap
-	implementation "net.fabricmc:fabric-loader:${project.loader_version}"
-	implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+	// Fabric Loader & API harus pakai modImplementation agar Loom bisa remap
+	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 }
 
 processResources {
