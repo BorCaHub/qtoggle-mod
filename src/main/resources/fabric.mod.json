@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "id": "qtoggle",
+  "version": "${version}",
+  "name": "Q Toggle (Drop Lock)",
+  "description": "Tombol Q tidak drop item secara default. Tekan keybind toggle (default: G) untuk menyalakan/mematikan mode drop. Saat aktif, Q drop normal seperti biasa.",
+  "authors": ["You"],
+  "contact": {},
+  "license": "MIT",
+  "icon": "assets/qtoggle/icon.png",
+  "environment": "client",
+  "entrypoints": {
+    "client": [
+      "com.example.qtoggle.QToggleClient"
+    ]
+  },
+  "depends": {
+    "fabricloader": ">=0.18.4",
+    "minecraft": ">=26.1 <26.2",
+    "java": ">=25",
+    "fabric-api": "*"
+  }
+}
