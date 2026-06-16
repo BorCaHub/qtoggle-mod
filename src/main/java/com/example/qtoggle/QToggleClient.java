@@ -27,31 +27,31 @@ public class QToggleClient implements ClientModInitializer {
         ClientTickEvents.START_CLIENT_TICK.register(client -> {
             if (client.player == null) return;
 
-            // Cek toggle dulu di START tick (sebelum game proses input)
+            // Check toggle first in START tick (before the game processes input)
             while (toggleKey.consumeClick()) {
                 dropEnabled = !dropEnabled;
-                tampilkanStatus(client, dropEnabled);
+                showStatus(client, dropEnabled);
             }
 
-            // Lock Q di START tick sebelum game sempat proses drop
+            // Lock Q in START tick before the game can process the drop
             if (!dropEnabled) {
                 Options options = client.options;
                 KeyMapping dropKey = options.keyDrop;
 
-                // Paksa key dianggap tidak ditekan sama sekali
+                // Force the key to be treated as not pressed at all
                 dropKey.setDown(false);
 
-                // Drain semua click yang pending
+                // Drain all pending clicks
                 while (dropKey.consumeClick()) { }
             }
         });
     }
 
-    private void tampilkanStatus(Minecraft client, boolean aktif) {
+    private void showStatus(Minecraft client, boolean active) {
         if (client.player == null) return;
-        String teks = aktif
-                ? "§a[Q Toggle] DROP: AKTIF — Q drop item"
-                : "§c[Q Toggle] DROP: TERKUNCI — Q tidak drop";
-        client.gui.setOverlayMessage(Component.literal(teks), false);
+        String message = active
+                ? "§a[Q Toggle] DROP: ENABLED — Q drops items"
+                : "§c[Q Toggle] DROP: LOCKED — Q will not drop";
+        client.gui.setOverlayMessage(Component.literal(message), false);
     }
 }
