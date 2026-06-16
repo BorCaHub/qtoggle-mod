@@ -1,13 +1,13 @@
-package com.example.qtoggle;
-
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.Options;
+import net.minecraft.resources.ResourceLocation;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.network.chat.Component;
+import org.lwjgl.glfw.GLFW;
 
 /**
  * Q Toggle (Drop Lock) — Client Mod Initializer
@@ -30,15 +30,20 @@ public class QToggleClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
 
+        // MC 26.1: Category dibuat lewat KeyMapping.Category.register(Identifier)
+        KeyMapping.Category category = KeyMapping.Category.register(
+                ResourceLocation.fromNamespaceAndPath("qtoggle", "main")
+        );
+
         // MC 26.1 / Fabric API 26.1:
-        // - KeyBindingHelper renamed to KeyMappingHelper (keymapping.v1)
-        // - registerKeyBinding renamed to registerKeyMapping
-        // - Category is now a plain String (no ResourceLocation needed)
+        // - KeyMappingHelper.registerKeyMapping (bukan registerKeyBinding)
+        // - GLFW.GLFW_KEY_G dari org.lwjgl.glfw.GLFW (bukan InputConstants.GLFW_KEY_G)
+        // - Category object, bukan String
         toggleKey = KeyMappingHelper.registerKeyMapping(new KeyMapping(
-                "key.qtoggle.toggle",              // ID (dipakai oleh file lang)
+                "key.qtoggle.toggle",       // ID (dipakai oleh file lang)
                 InputConstants.Type.KEYSYM,
-                InputConstants.GLFW_KEY_G,          // int constant langsung, bukan .KEY_G.getValue()
-                "key.categories.qtoggle.main"       // Kategori sebagai String
+                GLFW.GLFW_KEY_G,            // Konstanta GLFW dari LWJGL
+                category
         ));
 
         // Hook ke event tick client — cek input setiap tick
@@ -56,11 +61,11 @@ public class QToggleClient implements ClientModInitializer {
                 Options options = client.options;
                 KeyMapping dropKey = options.keyDrop;
 
+                // Drain semua klik yang tertunda agar tidak ada drop yang "nyangkut"
                 if (dropKey.isDown()) {
-                    // Matikan status tombol drop di level input
-                    KeyMapping.set(dropKey.getKey(), false);
-                    // Bersihkan antrian klik agar tidak ada drop yang "nyangkut"
-                    dropKey.consumeClick();
+                    while (dropKey.consumeClick()) {
+                        // Buang semua antrian klik drop
+                    }
                 }
             }
         });
@@ -68,7 +73,8 @@ public class QToggleClient implements ClientModInitializer {
 
     /**
      * Tampilkan pesan status ON/OFF di action bar (baris di atas hotbar).
-     * true = tampil di action bar, bukan chat
+     * MC 26.1: gunakan client.gui.setOverlayMessage() untuk action bar.
+     * sendSystemMessage() tanpa boolean mengirim ke chat, bukan action bar.
      */
     private void tampilkanStatus(Minecraft client, boolean aktif) {
         if (client.player == null) return;
@@ -77,6 +83,7 @@ public class QToggleClient implements ClientModInitializer {
                 ? "§a[Q Toggle] Mode DROP: AKTIF — Q akan drop item"
                 : "§c[Q Toggle] Mode DROP: TERKUNCI — Q tidak drop";
 
-        client.player.sendSystemMessage(Component.literal(teks), true);
+        // setOverlayMessage = action bar (di atas hotbar), bukan chat
+        client.gui.setOverlayMessage(Component.literal(teks), false);
     }
 }
