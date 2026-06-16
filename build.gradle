@@ -17,11 +17,11 @@ java {
 }
 
 dependencies {
-	// Mappings wajib ada — tanpa ini Loom tidak bisa resolve class Minecraft
+	// MC 26.1 sudah pre-deobfuscated — pakai loom.noMappings() bukan officialMojangMappings()
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
-	mappings loom.officialMojangMappings()
+	mappings loom.noMappings()
 
-	// Fabric Loader & API harus pakai modImplementation agar Loom bisa remap
+	// Fabric Loader & API tetap pakai modImplementation agar Loom bisa wire dependency
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 }
