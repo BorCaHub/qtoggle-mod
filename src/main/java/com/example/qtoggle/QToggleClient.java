@@ -17,16 +17,16 @@ public class QToggleClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
 
-        // Buat KeyMapping dengan constructor (String name, int keyCode, String category)
-        // Constructor ini tersedia di semua versi MC modern tanpa perlu Fabric helper
+        // Buat category dulu — MC 26.1 pakai KeyMapping.Category.create(String)
+        KeyMapping.Category category = KeyMapping.Category.create("key.categories.qtoggle.main");
+
+        // Constructor KeyMapping dengan Category object
         toggleKey = new KeyMapping(
                 "key.qtoggle.toggle",
+                InputConstants.Type.KEYSYM,
                 GLFW.GLFW_KEY_G,
-                "key.categories.qtoggle.main"
+                category
         );
-
-        // Daftarkan manual ke map vanilla
-        KeyMapping.ALL.put("key.qtoggle.toggle", toggleKey);
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
 
