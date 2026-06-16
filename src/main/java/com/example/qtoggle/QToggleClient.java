@@ -11,7 +11,6 @@ import org.lwjgl.glfw.GLFW;
 public class QToggleClient implements ClientModInitializer {
 
     public static boolean dropEnabled = false;
-    // Keybind toggle hardcode GLFW key G — tanpa registrasi KeyMapping sama sekali
     private static final int TOGGLE_KEY = GLFW.GLFW_KEY_G;
     private static boolean wasPressed = false;
 
@@ -20,18 +19,17 @@ public class QToggleClient implements ClientModInitializer {
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             if (client.player == null) return;
 
-            // Cek tombol G manual lewat GLFW window handle
-            long window = Minecraft.getInstance().getWindow().getWindow();
+            // MC 26.1: getWindow() diganti jadi handle() atau windowHandle()
+            long window = Minecraft.getInstance().getWindow().handle;
+
             boolean isPressed = GLFW.glfwGetKey(window, TOGGLE_KEY) == GLFW.GLFW_PRESS;
 
-            // Toggle saat baru ditekan (rising edge)
             if (isPressed && !wasPressed) {
                 dropEnabled = !dropEnabled;
                 tampilkanStatus(client, dropEnabled);
             }
             wasPressed = isPressed;
 
-            // Lock tombol Q kalau mode OFF
             if (!dropEnabled) {
                 Options options = client.options;
                 KeyMapping dropKey = options.keyDrop;
