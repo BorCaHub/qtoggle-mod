@@ -17,7 +17,6 @@ public class QToggleClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
 
-        // Pakai KeyMapping.Category.MISC yang sudah ada — tidak perlu bikin category baru
         toggleKey = new KeyMapping(
                 "key.qtoggle.toggle",
                 InputConstants.Type.KEYSYM,
@@ -25,20 +24,25 @@ public class QToggleClient implements ClientModInitializer {
                 KeyMapping.Category.MISC
         );
 
-        ClientTickEvents.END_CLIENT_TICK.register(client -> {
+        ClientTickEvents.START_CLIENT_TICK.register(client -> {
             if (client.player == null) return;
 
+            // Cek toggle dulu di START tick (sebelum game proses input)
             while (toggleKey.consumeClick()) {
                 dropEnabled = !dropEnabled;
                 tampilkanStatus(client, dropEnabled);
             }
 
+            // Lock Q di START tick sebelum game sempat proses drop
             if (!dropEnabled) {
                 Options options = client.options;
                 KeyMapping dropKey = options.keyDrop;
-                if (dropKey.isDown()) {
-                    while (dropKey.consumeClick()) { }
-                }
+
+                // Paksa key dianggap tidak ditekan sama sekali
+                dropKey.setDown(false);
+
+                // Drain semua click yang pending
+                while (dropKey.consumeClick()) { }
             }
         });
     }
