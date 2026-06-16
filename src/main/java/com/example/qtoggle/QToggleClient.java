@@ -2,6 +2,7 @@ package com.example.qtoggle;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.Options;
@@ -14,15 +15,20 @@ public class QToggleClient implements ClientModInitializer {
     public static boolean dropEnabled = false;
     private static KeyMapping toggleKey;
 
+    // Category name must match the translation key in lang files
+    private static final String KEY_CATEGORY = "key.categories.qtoggle.main";
+
     @Override
     public void onInitializeClient() {
 
-        toggleKey = new KeyMapping(
-                "key.qtoggle.toggle",
+        // KeyBindingHelper.registerKeyBinding() registers the key so it appears
+        // under Options > Controls > "Q Toggle" category
+        toggleKey = KeyBindingHelper.registerKeyBinding(new KeyMapping(
+                "key.qtoggle.toggle",       // translation key (en_us.json)
                 InputConstants.Type.KEYSYM,
-                GLFW.GLFW_KEY_G,
-                KeyMapping.Category.MISC
-        );
+                GLFW.GLFW_KEY_G,            // default key: G
+                KEY_CATEGORY                // custom category shown in Controls screen
+        ));
 
         ClientTickEvents.START_CLIENT_TICK.register(client -> {
             if (client.player == null) return;
