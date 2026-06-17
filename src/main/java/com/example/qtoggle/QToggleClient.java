@@ -2,7 +2,6 @@ package com.example.qtoggle;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.Options;
@@ -19,39 +18,32 @@ public class QToggleClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
 
-        // MC 26.1: use fromNamespaceAndPath (constructor is private, .of() tidak ada)
         KeyMapping.Category toggleCategory = KeyMapping.Category.register(
                 Identifier.fromNamespaceAndPath("qtoggle", "main")
         );
 
-        // PENTING: harus didaftarin lewat KeyBindingHelper, kalau cuma
-        // "new KeyMapping(...)" doang, keybind-nya gak akan pernah ke-trigger
-        // dan gak akan muncul di Options > Controls.
-        toggleKey = KeyBindingHelper.registerKeyBinding(new KeyMapping(
-                "key.qtoggle.toggle",       // translation key (en_us.json)
+        // MC 26.1: constructor KeyMapping otomatis registerMapping(...) sendiri
+        // (lihat javap dump: registerMapping dipanggil internal, tidak perlu
+        // KeyBindingHelper dari Fabric API lagi)
+        toggleKey = new KeyMapping(
+                "key.qtoggle.toggle",
                 InputConstants.Type.KEYSYM,
-                GLFW.GLFW_KEY_G,            // default key: G
-                toggleCategory              // custom category in Controls screen
-        ));
+                GLFW.GLFW_KEY_G,
+                toggleCategory
+        );
 
         ClientTickEvents.START_CLIENT_TICK.register(client -> {
             if (client.player == null) return;
 
-            // Check toggle first in START tick (before the game processes input)
             while (toggleKey.consumeClick()) {
                 dropEnabled = !dropEnabled;
                 showStatus(client, dropEnabled);
             }
 
-            // Lock Q in START tick before the game can process the drop
             if (!dropEnabled) {
                 Options options = client.options;
                 KeyMapping dropKey = options.keyDrop;
-
-                // Force the key to be treated as not pressed at all
                 dropKey.setDown(false);
-
-                // Drain all pending clicks
                 while (dropKey.consumeClick()) { }
             }
         });
