@@ -2,6 +2,7 @@ package com.example.qtoggle;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.Options;
@@ -22,15 +23,15 @@ public class QToggleClient implements ClientModInitializer {
                 Identifier.fromNamespaceAndPath("qtoggle", "main")
         );
 
-        // MC 26.1: constructor KeyMapping otomatis registerMapping(...) sendiri
-        // (lihat javap dump: registerMapping dipanggil internal, tidak perlu
-        // KeyBindingHelper dari Fabric API lagi)
-        toggleKey = new KeyMapping(
+        // MC 26.1: KeyBindingHelper sudah di-rename jadi KeyMappingHelper
+        // (lihat docs.fabricmc.net/develop/porting/fabric-api).
+        // Tanpa ini, keybind tidak akan muncul di Options > Controls.
+        toggleKey = KeyMappingHelper.registerKeyMapping(new KeyMapping(
                 "key.qtoggle.toggle",
                 InputConstants.Type.KEYSYM,
                 GLFW.GLFW_KEY_G,
                 toggleCategory
-        );
+        ));
 
         ClientTickEvents.START_CLIENT_TICK.register(client -> {
             if (client.player == null) return;
